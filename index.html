@@ -1,192 +1,263 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>17</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>17</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+@font-face{
+    font-family:"SpaceGrotesk";
+    src:local("Space Grotesk");
+}
 
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      color: #fff;
-      overflow: hidden;
-      font-family: Arial, Helvetica, sans-serif;
-    }
+*{box-sizing:border-box}
 
-    .screen {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    background:#050505;
+    color:#fff;
+    overflow:hidden;
+    font-family:"Space Grotesk",Arial,Helvetica,sans-serif
+}
 
-    .number {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 110px;
-      font-weight: 300;
-      letter-spacing: -9px;
-      user-select: none;
-    }
+#s{
+    position:relative;
+    width:100%;
+    height:100%;
+    background:
+        radial-gradient(circle at 50% 42%, rgba(255,255,255,0.05), transparent 55%),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px);
+}
 
-    .corrupted {
-      position: absolute;
-      left: 50%;
-      bottom: 20px;
-      transform: translateX(-50%);
-      color: #3b3b3b;
-      font-size: 7px;
-      letter-spacing: 1.5px;
-      white-space: nowrap;
-      user-select: none;
-    }
+#grain{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:0.05;
+    mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
 
-    .input-container {
-      position: absolute;
-      left: 18px;
-      bottom: 18px;
-    }
+#n{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:min(28vw,190px);
+    font-weight:200;
+    letter-spacing:-0.05em;
+    user-select:none;
+    color:#f2f2f2;
+    text-shadow:0 0 60px rgba(255,255,255,0.08);
+    animation:breathe 6.5s ease-in-out infinite;
+}
 
-    #answer {
-      width: 150px;
-      height: 25px;
-      padding: 4px 7px;
-      background: transparent;
-      border: 1px solid #191919;
-      outline: none;
-      color: #777;
-      font-family: monospace;
-      font-size: 10px;
-      transition: border-color 0.3s ease;
-    }
+@keyframes breathe{
+    0%,100%{ opacity:0.92; }
+    50%{ opacity:1; }
+}
 
-    #answer:focus {
-      border-color: #333;
-    }
+#c{
+    position:absolute;
+    bottom:22px;
+    left:50%;
+    transform:translateX(-50%);
+    color:#2e2e2e;
+    font-size:7px;
+    letter-spacing:2px;
+    white-space:nowrap;
+    user-select:none;
+    font-weight:400;
+}
 
-    #location {
-      position: absolute;
-      top: calc(50% + 78px);
-      left: 50%;
-      transform: translateX(-50%);
-      display: none;
-      color: #555;
-      font-family: monospace;
-      font-size: 10px;
-      letter-spacing: 0.5px;
-      white-space: nowrap;
-      opacity: 0;
-      transition: opacity 1.5s ease;
-    }
+#i{
+    position:absolute;
+    bottom:18px;
+    left:18px;
+    width:160px;
+    height:26px;
+    padding:4px 8px;
+    background:rgba(255,255,255,0.015);
+    border:1px solid #1a1a1a;
+    outline:none;
+    color:#7a7a7a;
+    font-family:"IBM Plex Mono","Courier New",monospace;
+    font-size:10px;
+    letter-spacing:1px;
+    transition:border-color 0.4s, background 0.4s;
+}
 
-    #location.visible {
-      display: block;
-      opacity: 1;
-    }
-  </style>
+#i:focus{
+    border-color:#3a3a3a;
+    background:rgba(255,255,255,0.03);
+}
+
+#i.bad{
+    border-color:#3a1414;
+    animation:shake 0.3s;
+}
+
+@keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    25%{ transform:translateX(-3px); }
+    75%{ transform:translateX(3px); }
+}
+
+#l{
+    position:absolute;
+    top:calc(50% + 96px);
+    left:50%;
+    transform:translateX(-50%);
+    display:none;
+    color:#5c5c5c;
+    font-family:"IBM Plex Mono","Courier New",monospace;
+    font-size:11px;
+    letter-spacing:0.5px;
+    white-space:nowrap;
+    opacity:0;
+    transition:opacity 1.9s;
+}
+
+#l.v{
+    display:block;
+    opacity:1;
+}
+
+#l::before{
+    content:"— ";
+    color:#333;
+}
+</style>
 </head>
 
 <body>
 
-  <main class="screen">
-    <div class="number">17</div>
+<div id="s">
+    <div id="grain"></div>
+    <div id="n">17</div>
+    <div id="l"></div>
+    <div id="c">my source code is corrupted</div>
+    <input id="i" autocomplete="off" spellcheck="false">
+</div>
 
-    <div id="location"></div>
+<script>
+(function(){
 
-    <div class="corrupted">
-      my source code is corrupted
-    </div>
+const q = document.getElementById("i");
+const l = document.getElementById("l");
 
-    <div class="input-container">
-      <input
-        id="answer"
-        type="text"
-        autocomplete="off"
-        autocorrect="off"
-        autocapitalize="off"
-        spellcheck="false"
-        aria-label="Answer"
-      >
-    </div>
-  </main>
 
-  <script>
-    const input = document.getElementById("answer");
-    const locationElement = document.getElementById("location");
 
-    const sequence = [1, 1];
+const A = [71,17,3,13,7,31,2,19,11,5,23,29,37,41,43,47,53,59,61,67,79,83,89,97];
+const B = [0x11,0x07,0x13,0x02,0x1d,0x05,0x17,0x0b,0x1f,0x03,0x25,0x1b,0x29,0x0d,0x21,0x0f,0x33,0x09];
 
-    for (let i = 2; i < 12; i++) {
-      sequence[i] = sequence[i - 1] + sequence[i - 2];
+const F = [1,1];
+for (let i = 2; i < 26; i++) F[i] = F[i-1] + F[i-2];
+
+const P = [];
+for (let n = 2; n < 220; n++){
+    let ok = 1;
+    for (let d = 2; d*d <= n; d++){
+        if (n % d === 0){ ok = 0; break; }
     }
+    if (ok) P.push(n);
+}
 
-    const seventh = sequence[6];
 
-    const fragments = [3, 17, 7, 71];
 
-    const a = fragments[2];
-    const b = fragments[0];
-    const c = fragments[3];
-    const d = fragments[1];
+const R = [F[11], P[9], F[14], P[12], F[9], P[7]];
+const K = [A[1], A[4], A[3], A[0], A[5], A[2]];
 
-    const answer =
-      Math.pow(c - a, 2) * d + seventh;
 
-    const vault = {
-      x: [
-        719635,
-        1016684365
-      ],
-      y: [
-        102430,
-        2505344339
-      ]
-    };
 
-    function recoverLocation() {
-      const latitude =
-        Number(
-          BigInt(vault.x[0]) * 10000000000n +
-          BigInt(vault.x[1])
-        ) / 100000000000000;
+const U = K.map((x,i) => (x ^ R[i]) + ((R[(i+2) % R.length] % 17) * i));
+const V = U.map((x) => ((x << 1) ^ (x >> 1)) & 255);
+const W = [V[3], V[0], V[5], V[2], V[1], V[4]];
+const Z = W.map((x,i) => (x + B[i] + F[i+5]) % 256);
+const T = Z.map((x,i) => x ^ (B[(i+7) % B.length]));
 
-      const longitude =
-        Number(
-          BigInt(vault.y[0]) * 10000000000n +
-          BigInt(vault.y[1])
-        ) / 10000000000000;
 
-      return latitude + ", " + longitude;
-    }
 
-    input.addEventListener("input", () => {
-      const value = input.value.trim();
+const G = T.reduce((x,y,i) => (x + y*(i+3) + R[i % R.length]) % 1000000, 17);
+const H = (G * F[12] + P[13] * P[5] - A[1]) % 1000000;
+const core = (H + (Z[2] << 8) + Z[4]) % 1000000;
 
-      if (!/^\d+$/.test(value)) {
-        locationElement.classList.remove("visible");
-        return;
-      }
 
-      const entered = Number(value);
 
-      if (entered === answer) {
-        locationElement.textContent = recoverLocation();
-        locationElement.classList.add("visible");
-      } else {
-        locationElement.classList.remove("visible");
-      }
+function unwrap(coreValue){
+
+    const digits = String(coreValue).padStart(6,"0").split("").map(Number);
+
+    // deux cellules de parité, dérivées des chiffres eux-mêmes
+    const parity1 = (digits[0] + digits[5]) % 10;
+    const parity2 = (digits[2] ^ digits[3]) % 10;
+    const cells = digits.concat([parity1, parity2]);
+
+    // permutation fixe sur 8 cellules
+    const PERM = [5,2,7,0,4,1,6,3];
+    const shuffled = PERM.map(idx => cells[idx]);
+
+    // flux de décalage dérivé des nombres premiers 20..27
+    const keystream = P.slice(20,28).map(x => x % 10);
+    const folded = shuffled.map((c,i) => (c + keystream[i]) % 10);
+
+    // --- verrou miroir : on rejoue la même opération en sens inverse ---
+    const unfolded = folded.map((c,i) => (c - keystream[i] + 10) % 10);
+
+    const unshuffled = new Array(8);
+    PERM.forEach((origIdx, shuffledIdx) => {
+        unshuffled[origIdx] = unfolded[shuffledIdx];
     });
-  </script>
+
+    return unshuffled.slice(0,6).join("");
+}
+
+const answer = unwrap(core);
+
+
+
+const m = [719635, 1016684365, 102430, 2505344339];
+
+function reveal(){
+    const lat = Number(BigInt(m[0]) * 10000000000n + BigInt(m[1])) / 100000000000000;
+    const lon = Number(BigInt(m[2]) * 10000000000n + BigInt(m[3])) / 10000000000000;
+    return lat + ", " + lon;
+}
+
+
+
+let shakeTimer = null;
+
+q.addEventListener("input", () => {
+    const s = q.value.trim();
+
+    if (s.length !== 6){
+        l.classList.remove("v");
+        return;
+    }
+
+    let ok = true;
+    for (let i = 0; i < 6; i++){
+        if (s.charCodeAt(i) !== answer.charCodeAt(i)){ ok = false; break; }
+    }
+
+    if (ok){
+        l.textContent = reveal();
+        l.classList.add("v");
+        q.classList.remove("bad");
+    } else {
+        l.classList.remove("v");
+        q.classList.add("bad");
+        clearTimeout(shakeTimer);
+        shakeTimer = setTimeout(() => q.classList.remove("bad"), 300);
+    }
+});
+
+})();
+</script>
 
 </body>
 </html>
-
