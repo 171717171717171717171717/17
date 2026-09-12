@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>17</title>
 
   <style>
@@ -12,8 +11,7 @@
       box-sizing: border-box;
     }
 
-    html,
-    body {
+    html, body {
       margin: 0;
       width: 100%;
       height: 100%;
@@ -29,46 +27,28 @@
       height: 100%;
     }
 
-    /* =========================
-       17
-       ========================= */
-
     .number {
       position: absolute;
       top: 50%;
       left: 50%;
-
       transform: translate(-50%, -50%);
-
       font-size: 110px;
       font-weight: 300;
       letter-spacing: -9px;
-
       user-select: none;
     }
-
-    /* =========================
-       MESSAGE
-       ========================= */
 
     .corrupted {
       position: absolute;
       left: 50%;
       bottom: 20px;
-
       transform: translateX(-50%);
-
       color: #3b3b3b;
       font-size: 7px;
       letter-spacing: 1.5px;
-
       white-space: nowrap;
       user-select: none;
     }
-
-    /* =========================
-       INPUT
-       ========================= */
 
     .input-container {
       position: absolute;
@@ -79,19 +59,13 @@
     #answer {
       width: 150px;
       height: 25px;
-
       padding: 4px 7px;
-
       background: transparent;
       border: 1px solid #191919;
-
       outline: none;
-
       color: #777;
-
       font-family: monospace;
       font-size: 10px;
-
       transition: border-color 0.3s ease;
     }
 
@@ -99,31 +73,18 @@
       border-color: #333;
     }
 
-    /* =========================
-       LOCATION
-       ========================= */
-
     #location {
       position: absolute;
-
       top: calc(50% + 78px);
       left: 50%;
-
       transform: translateX(-50%);
-
       display: none;
-
       color: #555;
-
       font-family: monospace;
       font-size: 10px;
-
       letter-spacing: 0.5px;
-
       white-space: nowrap;
-
       opacity: 0;
-
       transition: opacity 1.5s ease;
     }
 
@@ -134,25 +95,16 @@
   </style>
 </head>
 
-
 <body>
 
   <main class="screen">
+    <div class="number">17</div>
 
-    <div class="number">
-      17
-    </div>
-
-
-    <div id="location">
-      71.96351016684365, 102.4302505344339
-    </div>
-
+    <div id="location"></div>
 
     <div class="corrupted">
       my source code is corrupted
     </div>
-
 
     <div class="input-container">
       <input
@@ -165,189 +117,76 @@
         aria-label="Answer"
       >
     </div>
-
   </main>
 
-
   <script>
-
-    /*
-    ============================================================
-    
-                         MEMORY FRAGMENT
-    
-                           [ 17 ]
-    
-    ============================================================
-
-    Some of the original data appears to be missing.
-
-    Only these fragments survived:
-
-        02  03  05  07  11  13  17
-
-    The system recorded:
-
-        A = 17
-
-        B = 71
-
-        C = 7
-
-        D = 3
-
-    ------------------------------------------------------------
-
-    RECOVERED NOTE:
-
-        "The first door is not the answer."
-
-        "Take the seventh."
-
-        "Then square what remains."
-
-        "The number that opens the last fragment
-         is hidden between the lines."
-
-    ------------------------------------------------------------
-
-    Fragment:
-
-        sequence[0] = 1
-        sequence[1] = 1
-
-        sequence[n] =
-            sequence[n - 1] + sequence[n - 2]
-
-    ------------------------------------------------------------
-
-    Another fragment:
-
-        17
-        71
-        117
-        171
-        ???
-
-    ------------------------------------------------------------
-
-    WARNING:
-
-        Do not trust the order.
-
-        03 17 07 71
-
-    ============================================================
-    */
-
-
     const input = document.getElementById("answer");
     const locationElement = document.getElementById("location");
-
-
-    /*
-    ============================================================
-                      CORRUPTED CALCULATION
-    ============================================================
-
-    The answer is reconstructed from fragments.
-
-    It is intentionally not stored as a plain string.
-    ============================================================
-    */
-
-
-    const fragmentA = [3, 17, 7, 71];
 
     const sequence = [1, 1];
 
     for (let i = 2; i < 12; i++) {
-      sequence[i] =
-        sequence[i - 1] +
-        sequence[i - 2];
+      sequence[i] = sequence[i - 1] + sequence[i - 2];
     }
-
-
-    /*
-      Seventh element of the sequence.
-
-      Index:
-        0  1  2  3  4  5  6
-        1  1  2  3  5  8 13
-    */
 
     const seventh = sequence[6];
 
+    const fragments = [3, 17, 7, 71];
 
-    /*
-      Reorder the surviving fragments.
-    */
+    const a = fragments[2];
+    const b = fragments[0];
+    const c = fragments[3];
+    const d = fragments[1];
 
-    const a = fragmentA[2];
-    const b = fragmentA[0];
-    const c = fragmentA[3];
-    const d = fragmentA[1];
-
-
-    /*
-      The recovered equation:
-
-          ((C - A)² × D) + seventh
-
-      = ((71 - 7)² × 17) + 13
-
-      = 69645
-    */
-
-    const result =
+    const answer =
       Math.pow(c - a, 2) * d + seventh;
 
+    const vault = {
+      x: [
+        719635,
+        1016684365
+      ],
+      y: [
+        102430,
+        2505344339
+      ]
+    };
 
-    /*
-    ============================================================
-                         INPUT CHECK
-    ============================================================
-    */
+    function recoverLocation() {
+      const latitude =
+        Number(
+          BigInt(vault.x[0]) * 10000000000n +
+          BigInt(vault.x[1])
+        ) / 100000000000000;
+
+      const longitude =
+        Number(
+          BigInt(vault.y[0]) * 10000000000n +
+          BigInt(vault.y[1])
+        ) / 10000000000000;
+
+      return latitude + ", " + longitude;
+    }
 
     input.addEventListener("input", () => {
-
       const value = input.value.trim();
-
-      /*
-        Only numbers are accepted.
-      */
 
       if (!/^\d+$/.test(value)) {
         locationElement.classList.remove("visible");
         return;
       }
 
-
-      /*
-        Convert the input to a number.
-      */
-
       const entered = Number(value);
 
-
-      /*
-        Correct answer.
-      */
-
-      if (entered === result) {
-
+      if (entered === answer) {
+        locationElement.textContent = recoverLocation();
         locationElement.classList.add("visible");
-
       } else {
-
         locationElement.classList.remove("visible");
-
       }
-
     });
-
-
   </script>
 
 </body>
 </html>
+
