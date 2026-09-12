@@ -1,4 +1,4 @@
-/* WHY17171717171WHY */
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -14,188 +14,340 @@
 
     html,
     body {
+      margin: 0;
       width: 100%;
       height: 100%;
-      margin: 0;
       background: #000;
       color: #fff;
       overflow: hidden;
       font-family: Arial, Helvetica, sans-serif;
     }
 
-    .container {
+    .screen {
       position: relative;
       width: 100%;
       height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
+    /* =========================
+       17
+       ========================= */
 
     .number {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+
+      transform: translate(-50%, -50%);
+
       font-size: 110px;
-      font-weight: 400;
-      letter-spacing: -8px;
+      font-weight: 300;
+      letter-spacing: -9px;
+
       user-select: none;
     }
 
+    /* =========================
+       MESSAGE
+       ========================= */
 
     .corrupted {
       position: absolute;
-      bottom: 20px;
       left: 50%;
+      bottom: 20px;
+
       transform: translateX(-50%);
 
+      color: #3b3b3b;
       font-size: 7px;
-      color: #444;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
+
       white-space: nowrap;
       user-select: none;
     }
 
- 
-    .code-area {
+    /* =========================
+       INPUT
+       ========================= */
+
+    .input-container {
       position: absolute;
       left: 18px;
       bottom: 18px;
     }
 
-    .code-input {
-      width: 170px;
+    #answer {
+      width: 150px;
       height: 25px;
-
-      background: transparent;
-      border: 1px solid #222;
-
-      color: #888;
-      outline: none;
 
       padding: 4px 7px;
 
+      background: transparent;
+      border: 1px solid #191919;
+
+      outline: none;
+
+      color: #777;
+
       font-family: monospace;
       font-size: 10px;
+
+      transition: border-color 0.3s ease;
     }
 
-    .code-input:focus {
-      border-color: #444;
+    #answer:focus {
+      border-color: #333;
     }
 
+    /* =========================
+       LOCATION
+       ========================= */
 
-    .location {
+    #location {
       position: absolute;
 
-      top: calc(50% + 75px);
+      top: calc(50% + 78px);
       left: 50%;
 
       transform: translateX(-50%);
 
       display: none;
 
-      color: #666;
+      color: #555;
+
       font-family: monospace;
-      font-size: 11px;
+      font-size: 10px;
+
+      letter-spacing: 0.5px;
 
       white-space: nowrap;
-      user-select: text;
+
+      opacity: 0;
+
+      transition: opacity 1.5s ease;
     }
 
-    .location.visible {
+    #location.visible {
       display: block;
+      opacity: 1;
     }
   </style>
 </head>
 
+
 <body>
 
-  <div class="container">
+  <main class="screen">
 
     <div class="number">
       17
     </div>
 
-    <div
-      class="location"
-      id="location"
-    >
+
+    <div id="location">
       71.96351016684365, 102.4302505344339
     </div>
+
 
     <div class="corrupted">
       my source code is corrupted
     </div>
 
-    <div class="code-area">
+
+    <div class="input-container">
       <input
-        id="code"
-        class="code-input"
+        id="answer"
         type="text"
         autocomplete="off"
         autocorrect="off"
         autocapitalize="off"
         spellcheck="false"
+        aria-label="Answer"
       >
     </div>
 
-  </div>
+  </main>
+
 
   <script>
-    const input = document.getElementById("code");
-    const location = document.getElementById("location");
+
+    /*
+    ============================================================
+    
+                         MEMORY FRAGMENT
+    
+                           [ 17 ]
+    
+    ============================================================
+
+    Some of the original data appears to be missing.
+
+    Only these fragments survived:
+
+        02  03  05  07  11  13  17
+
+    The system recorded:
+
+        A = 17
+
+        B = 71
+
+        C = 7
+
+        D = 3
+
+    ------------------------------------------------------------
+
+    RECOVERED NOTE:
+
+        "The first door is not the answer."
+
+        "Take the seventh."
+
+        "Then square what remains."
+
+        "The number that opens the last fragment
+         is hidden between the lines."
+
+    ------------------------------------------------------------
+
+    Fragment:
+
+        sequence[0] = 1
+        sequence[1] = 1
+
+        sequence[n] =
+            sequence[n - 1] + sequence[n - 2]
+
+    ------------------------------------------------------------
+
+    Another fragment:
+
+        17
+        71
+        117
+        171
+        ???
+
+    ------------------------------------------------------------
+
+    WARNING:
+
+        Do not trust the order.
+
+        03 17 07 71
+
+    ============================================================
+    */
 
 
-    const fragments = [
-      [87, 72, 89],
+    const input = document.getElementById("answer");
+    const locationElement = document.getElementById("location");
 
-      [
-        49, 55, 49, 55, 49,
-        55, 49, 55, 49, 55, 49
-      ],
 
-      [87, 72, 89]
-    ];
+    /*
+    ============================================================
+                      CORRUPTED CALCULATION
+    ============================================================
 
-    const secret = fragments
-      .flat()
-      .map(value => String.fromCharCode(value))
-      .join("");
+    The answer is reconstructed from fragments.
 
+    It is intentionally not stored as a plain string.
+    ============================================================
+    */
+
+
+    const fragmentA = [3, 17, 7, 71];
+
+    const sequence = [1, 1];
+
+    for (let i = 2; i < 12; i++) {
+      sequence[i] =
+        sequence[i - 1] +
+        sequence[i - 2];
+    }
+
+
+    /*
+      Seventh element of the sequence.
+
+      Index:
+        0  1  2  3  4  5  6
+        1  1  2  3  5  8 13
+    */
+
+    const seventh = sequence[6];
+
+
+    /*
+      Reorder the surviving fragments.
+    */
+
+    const a = fragmentA[2];
+    const b = fragmentA[0];
+    const c = fragmentA[3];
+    const d = fragmentA[1];
+
+
+    /*
+      The recovered equation:
+
+          ((C - A)² × D) + seventh
+
+      = ((71 - 7)² × 17) + 13
+
+      = 69645
+    */
+
+    const result =
+      Math.pow(c - a, 2) * d + seventh;
+
+
+    /*
+    ============================================================
+                         INPUT CHECK
+    ============================================================
+    */
 
     input.addEventListener("input", () => {
 
-      const value = input.value;
+      const value = input.value.trim();
 
+      /*
+        Only numbers are accepted.
+      */
 
-
-      if (value.length !== secret.length) {
-        location.classList.remove("visible");
+      if (!/^\d+$/.test(value)) {
+        locationElement.classList.remove("visible");
         return;
       }
 
-      let valid = true;
+
+      /*
+        Convert the input to a number.
+      */
+
+      const entered = Number(value);
 
 
+      /*
+        Correct answer.
+      */
 
-      for (let i = 0; i < secret.length; i++) {
+      if (entered === result) {
 
-        if (
-          value.charCodeAt(i) !==
-          secret.charCodeAt(i)
-        ) {
-          valid = false;
-          break;
-        }
+        locationElement.classList.add("visible");
+
+      } else {
+
+        locationElement.classList.remove("visible");
 
       }
 
-      location.classList.toggle(
-        "visible",
-        valid
-      );
-
     });
+
+
   </script>
 
 </body>
 </html>
-
